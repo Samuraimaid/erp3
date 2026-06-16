@@ -52,22 +52,26 @@ erp-stack-backup/
 
 ## Instalación & Restauración
 
-### Opción 1: Restaurar desde el backup
+### Quick Start (Recomendado)
+
+```bash
+git clone https://github.com/Samuraimaid/erp3.git && cd erp3 && docker compose up -d && sleep 10 && docker exec mclarens2-mongodb mongorestore /restore-backup
+```
+
+### Opción 1: Restaurar desde el backup (paso a paso)
 
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/Samuraimaid/erp3.git
 cd erp3
 
-# 2. Asegúrate de tener las imágenes Docker (si no están en local, Docker las descargará)
-# Las imágenes se usan como están, si no existen se construirán
-
-# 3. Restaurar stack completo (requiere script bash)
-bash restore.sh
-
-# O manualmente:
+# 2. Iniciar stack
 docker compose up -d
+
+# 3. Esperar a que MongoDB esté listo
 sleep 10
+
+# 4. Restaurar la base de datos desde el backup
 docker exec mclarens2-mongodb mongorestore /restore-backup
 ```
 
