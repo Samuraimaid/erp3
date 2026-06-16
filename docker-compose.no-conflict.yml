@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # ==================== MC-LARENS ERP3 (GITHUB BACKUP) ====================
+  mongodb:
+    image: mongo:7.0
+    container_name: mclarens2-mongodb-github
+    restart: unless-stopped
+    networks:
+      - mundo-network-github
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongodb_data_github:/data/db
+      - mongodb_config_github:/data/configdb
+    environment:
+      MONGO_INITDB_DATABASE: mc-larens2_mundo_accesorios_erp
+
+  backend:
+    image: mc-larenserp20-backend:updated-20260219
+    container_name: mundo-backend-github
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_started
+    networks:
+      - mundo-network-github
+    ports:
+      - "8003:8001"
+    environment:
+      PYTHONPATH: /app
+      COOKIE_SECURE: "false"
+      ENABLE_TEST_PIN_SEEDING: "false"
+      CORS_ORIGINS: "http://127.0.0.1:3002,http://localhost:3002,http://127.0.0.1:8003,http://localhost:8003"
+      DEFAULT_PIN_USER_EMAIL: "xinon@local"
+      ALLOW_RRHH_PIN_MANAGEMENT: "false"
+      AUTH_SESSION_DATA_URL: ""
+      DEFAULT_PIN_USER_PIN: "0101"
+      DEFAULT_LOGIN_PIN_USER_PIN: "01011990"
+      MONGO_URL: "mongodb://mongodb:27017"
+      DB_NAME: "mc-larens2_mundo_accesorios_erp"
+      ENABLE_TEST_ENDPOINTS: "true"
+      AUTOLOAD_CORE_SEED: "true"
+    command: uvicorn backend.server:app --host 0.0.0.0 --port 8001
+
+  frontend:
+    image: mundo-frontend:updated-20260219
+    container_name: mundo-frontend-github
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - mundo-network-github
+    ports:
+      - "3002:80"
+    environment:
+      VITE_BACKEND_URL: ""
+      VITE_AUTH_URL: "/api/auth/login"
+      VITE_ATTENDANCE_KIOSK_SHORTCUT_PIN: "50005000"
+      REACT_APP_BACKEND_URL: ""
+      REACT_APP_AUTH_URL: "/api/auth/login"
+      REACT_APP_ATTENDANCE_KIOSK_SHORTCUT_PIN: "50005000"
+    command: nginx -g "daemon off;"
+
+networks:
+  mundo-network-github:
+    driver: bridge
+
+volumes:
+  mongodb_data_github:
+    driver: local
+  mongodb_config_github:
+    driver: local
