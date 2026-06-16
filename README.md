@@ -1,138 +1,196 @@
 # MC-LarenS ERP Stack Backup
 
-Backup and documentation of the MC-LarenS ERP stack running on Docker.
+Backup completo de la base de datos y configuración del MC-LarenS ERP (Mundo Accesorios).
+
+## ⚠️ Contenido del Backup
+
+✅ **Incluido:**
+- `docker-compose.yml` - Configuración de servicios
+- `mongodb-backup/` - Dump completo de la base de datos MongoDB
+- Instrucciones de restauración
+
+❌ **NO Incluido:**
+- Imágenes Docker (`.tar` files) - Se descargan automáticamente desde la máquina donde se ejecuta
+- WhatsApp CRM (excluido por solicitud)
+
+## Estructura
+
+```
+erp-stack-backup/
+├── docker-compose.yml      # Configuración de servicios
+├── mongodb-backup/         # Dump de MongoDB con todos los datos
+├── restore.sh             # Script para restaurar stack
+├── backup.sh              # Script para hacer backups
+└── README.md              # Este archivo
+```
 
 ## Stack Components
 
-### 1. MC-LarenS ERP2 (Mundo Accesorios)
-- **Backend**: Python FastAPI application on port 8001
-  - Image: `mc-larenserp20-backend:updated-20260219`
-  - Database: MongoDB (puerto 27017)
-  - Main entrypoint: `uvicorn backend.server:app`
+### MongoDB 7.0
+- Database: `mc-larens2_mundo_accesorios_erp`
+- Puerto: 27017
+- Colecciones: products, customers, inventory, vehicles, users, etc.
 
-- **Frontend**: React/Nginx application on port 3000
-  - Image: `mundo-frontend:updated-20260219`
-  - Reverse proxy via Nginx
+### Backend (FastAPI Python)
+- Image: `mc-larenserp20-backend:updated-20260219`
+- Puerto: 8001
+- Entrypoint: `uvicorn backend.server:app`
+- Dependencia: MongoDB
 
-- **MongoDB**: Database service
-  - Image: `mongo:7.0`
-  - Database: `mc-larens2_mundo_accesorios_erp`
+### Frontend (React + Nginx)
+- Image: `mundo-frontend:updated-20260219`
+- Puerto: 3000
+- Reverse proxy: Nginx
+- Dependencia: Backend
 
-### 2. WhatsApp CRM
-- **Service**: Node.js CRM application on port 3001
-  - Image: `whatsapp-crm-mc-larens-crm`
-  - Database: SQLite (`/app/data/crm.sqlite`)
-  - Features: WhatsApp integration, AI analysis (Ollama), automated backups
+## Requisitos
 
-## Quick Start
-
-### Prerequisites
 - Docker Engine (latest)
 - Docker Compose v2.x
-- 4GB+ RAM available
+- 2GB+ RAM disponible
+- 5GB+ espacio en disco
 
-### Launch Stack
+## Instalación & Restauración
+
+### Opción 1: Restaurar desde el backup
+
 ```bash
+# 1. Clonar el repositorio
+git clone https://github.com/Samuraimaid/erp3.git
+cd erp3
+
+# 2. Asegúrate de tener las imágenes Docker (si no están en local, Docker las descargará)
+# Las imágenes se usan como están, si no existen se construirán
+
+# 3. Restaurar stack completo (requiere script bash)
+bash restore.sh
+
+# O manualmente:
+docker compose up -d
+sleep 10
+docker exec mclarens2-mongodb mongorestore /restore-backup
+```
+
+### Opción 2: Fresh start sin datos
+
+```bash
+# Solo inicia los servicios sin restaurar datos previos
 docker compose up -d
 ```
 
-### Check Services
+## Verificación
+
+### Servicios en ejecución
 ```bash
 docker compose ps
 ```
 
-### View Logs
+### Logs
 ```bash
-# All services
+# Todos los servicios
 docker compose logs -f
 
-# Specific service
+# Servicio específico
 docker compose logs -f backend
 docker compose logs -f frontend
-docker compose logs -f mc-larens-crm
+docker compose logs -f mongodb
 ```
 
-## Services & Ports
+### Acceso a servicios
 
-| Service | URL | Port | Protocol |
-|---------|-----|------|----------|
-| Frontend | http://localhost:3000 | 3000 | HTTP |
-| Backend API | http://localhost:8001 | 8001 | HTTP |
-| CRM | http://localhost:3001 | 3001 | HTTP |
-| MongoDB | localhost:27017 | 27017 | TCP |
+| Servicio | URL |
+|----------|-----|
+| Frontend | http://localhost:3000 |
+| Backend API | http://localhost:8001 |
+| MongoDB | localhost:27017 |
 
-## Environment Variables
-
-Edit `docker-compose.yml` to modify:
-
-### Backend
-- `MONGO_URL`: MongoDB connection string
-- `CORS_ORIGINS`: Allowed CORS origins
-- `DEFAULT_PIN_USER_PIN`: Default PIN for users
-
-### CRM
-- `AUTH_SECRET`: Session secret (change in production!)
-- `DEFAULT_ADMIN_PASSWORD`: Admin password (change in production!)
-- `OLLAMA_BASE_URL`: AI model service URL
-- `BACKUP_CRON`: Backup schedule (cron format)
-
-## Volumes
-
-- `mongodb_data`: MongoDB database storage
-- `whatsapp_data`: CRM data
-- `whatsapp_sessions`: WhatsApp sessions
-- `whatsapp_logs`: Application logs
-- `whatsapp_uploads`: User uploads
-- `whatsapp_backups`: Database backups
-
-## Backup & Recovery
-
-### Export MongoDB
+### Conectar a MongoDB
 ```bash
-docker exec mclarens2-mongodb mongodump --out /backup
-docker cp mclarens2-mongodb:/backup ./mongodb_backup
+docker exec -it mclarens2-mongodb mongosh
+use mc-larens2_mundo_accesorios_erp
+show collections
 ```
 
-### Export CRM Data
+## Datos de Acceso (si aplica)
+
+Configura en `docker-compose.yml`:
+- PIN Usuario: `0101`
+- PIN Acceso: `01011990`
+- Email: `xinon@local`
+
+## Hacer Backup Nuevo
+
 ```bash
-docker cp mc-larens-crm:/app/data ./crm_data_backup
+# Exportar base de datos
+docker exec mclarens2-mongodb mongodump --out /dump
+docker cp mclarens2-mongodb:/dump ./mongodb-backup
+
+# Limpiar
+docker exec mclarens2-mongodb rm -rf /dump
+```
+
+## Detener Stack
+
+```bash
+docker compose down
+```
+
+## Detener y eliminar volúmenes
+
+```bash
+docker compose down -v
 ```
 
 ## Troubleshooting
 
-### Container keeps restarting
+### Contenedor MongoDB no inicia
 ```bash
-docker compose logs mc-larens-crm
+docker compose logs mongodb
+docker volume prune  # Limpiar volúmenes huérfanos
 ```
 
-### MongoDB connection issues
+### Error de conexión Backend -> MongoDB
 ```bash
-docker exec mclarens2-mongodb mongosh
+# Verificar red
+docker network inspect erp-stack-backup_mundo-network
+
+# Reiniciar servicios
+docker compose restart
 ```
 
-### Port already in use
-Edit `docker-compose.yml` and change port mapping:
-```yaml
-ports:
-  - "8080:8001"  # Change host port from 8001 to 8080
-```
-
-## Production Considerations
-
-⚠️ **Security Issues to Address:**
-- Change `DEFAULT_ADMIN_PASSWORD` to a strong password
-- Change `AUTH_SECRET` to a random value
-- Set `COOKIE_SECURE: "true"` in backend
-- Use environment variables from `.env` file instead of hardcoding
-- Set up SSL/TLS certificates
-- Configure proper MongoDB authentication
-- Limit CORS_ORIGINS to specific domains
-
-## Support
-
-For issues with specific services, check their respective logs:
+### Puerto ya en uso
 ```bash
-docker compose logs backend --tail=100
-docker compose logs frontend --tail=100
-docker compose logs mc-larens-crm --tail=100
+# Cambiar puerto en docker-compose.yml
+# De: "8001:8001"
+# A:  "8080:8001"
 ```
+
+### Memoria insuficiente
+```bash
+docker compose down
+# Aumentar memoria asignada a Docker Desktop
+docker compose up -d
+```
+
+## Notas Importantes
+
+⚠️ **Seguridad:**
+- Cambiar contraseñas y secrets antes de producción
+- No compartir este backup sin encriptar
+- Usar `.env` file en producción, no hardcoded values
+
+⚠️ **Rendimiento:**
+- MongoDB consume ~500MB RAM
+- Backend consume ~300MB RAM
+- Frontend consume ~100MB
+- Total mínimo: 1GB RAM
+
+## Soporte
+
+Para obtener más información sobre los servicios:
+- FastAPI docs: http://localhost:8001/docs
+- MongoDB: https://docs.mongodb.com/
+
+---
+
+Último backup: 2026-06-16

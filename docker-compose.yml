@@ -62,85 +62,12 @@ services:
       REACT_APP_ATTENDANCE_KIOSK_SHORTCUT_PIN: "50005000"
     command: nginx -g "daemon off;"
 
-  # ==================== WHATSAPP CRM ====================
-  mc-larens-crm:
-    image: whatsapp-crm-mc-larens-crm
-    container_name: mc-larens-crm
-    restart: unless-stopped
-    networks:
-      - crm-network
-    ports:
-      - "3001:3001"
-    volumes:
-      - whatsapp_data:/app/data
-      - whatsapp_logs:/app/logs
-      - whatsapp_sessions:/app/sessions
-      - whatsapp_backups:/app/backups
-      - whatsapp_uploads:/app/uploads
-    environment:
-      NODE_ENV: "production"
-      APP_NAME: "Mc-LarenS CRM"
-      APP_PORT: "3001"
-      APP_HOST: "0.0.0.0"
-      DEFAULT_ADMIN_USER: "admin"
-      DEFAULT_ADMIN_PASSWORD: "admin123"
-      AUTH_SECRET: "change-this-local-secret"
-      PUBLIC_APP_URL: ""
-      
-      # Paths
-      DATA_DIR: "/app/data"
-      LOG_DIR: "/app/logs"
-      UPLOAD_DIR: "/app/uploads"
-      BACKUP_DIR: "/app/backups"
-      SQLITE_PATH: "/app/data/crm.sqlite"
-      WHATSAPP_SESSION_DIR: "/app/sessions"
-      
-      # WhatsApp Config
-      WHATSAPP_RECONNECT_ENABLED: "true"
-      WHATSAPP_RECONNECT_MAX_ATTEMPTS: "0"
-      WHATSAPP_RECONNECT_DELAY_MS: "5000"
-      
-      # AI Config
-      AI_ENABLED: "true"
-      OLLAMA_BASE_URL: "http://host.docker.internal:11434"
-      OLLAMA_MODEL: "llama3.1:8b"
-      AI_ANALYSIS_CRON: "*/15 * * * *"
-      
-      # Cron Config
-      CRON_ENABLED: "true"
-      CRON_TIMEZONE: "America/Managua"
-      BACKUP_CRON: "0 2 * * *"
-      
-      # Logging & Upload
-      LOG_LEVEL: "info"
-      MAX_UPLOAD_MB: "25"
-      TZ: "America/Managua"
-    command: node src/index.js
-    healthcheck:
-      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:' + (process.env.APP_PORT || 3001) + '/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
 networks:
   mundo-network:
-    driver: bridge
-  crm-network:
     driver: bridge
 
 volumes:
   mongodb_data:
     driver: local
   mongodb_config:
-    driver: local
-  whatsapp_data:
-    driver: local
-  whatsapp_logs:
-    driver: local
-  whatsapp_sessions:
-    driver: local
-  whatsapp_backups:
-    driver: local
-  whatsapp_uploads:
     driver: local

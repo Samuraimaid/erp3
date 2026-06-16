@@ -10,8 +10,9 @@ __pycache__/
 env/
 venv/
 
-# Docker
-.dockerignore
+# Docker images (too large)
+*.tar
+*.tar.gz
 
 # Logs
 *.log

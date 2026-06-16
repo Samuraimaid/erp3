@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"sale_id":{"$numberInt":"1"}},"name":"sale_id_1","unique":true,"sparse":true}],"uuid":"81b7a532fc7c4b6ab174f793cdaf5744","collectionName":"dispatch_orders","type":"collection"}
