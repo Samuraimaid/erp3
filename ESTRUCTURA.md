@@ -1,92 +1,226 @@
-# Estructura del Proyecto MC-LarenS ERP
+# 📂 ESTRUCTURA DEL REPOSITORIO
+
+## Backend
 
 ```
-erp-stack-backup/
-├── backend-source/                 # Código fuente del Backend (FastAPI)
-│   ├── app/                        # Aplicación auxiliar
-│   ├── backend/                    # Módulo principal del backend
-│   │   ├── server.py              # Punto de entrada FastAPI
-│   │   └── ...                    # Otros módulos
-│   ├── requirements.txt            # Dependencias Python
-│   └── .gitignore
+/backend/
+├── requirements.txt              # Dependencias Python
+├── requirements.local.txt        # Dependencias locales
+├── requirements.prod.txt         # Dependencias producción
+├── Dockerfile                    # Imagen Docker del backend
+├── .dockerignore                 # Archivos a excluir del build
+├── entrypoint.sh                 # Script de inicio
+├── main.py                       # Punto de entrada
+├── server.py                     # Aplicación FastAPI
 │
-├── frontend-build/                 # Build compilado del Frontend (React)
-│   ├── assets/                    # Assets compilados
-│   ├── index.html
-│   ├── env.js
-│   └── ...
-│
-├── mongodb-backup/                 # Backup de la base de datos
-│   ├── admin/
-│   ├── mc-larens2_mundo_accesorios_erp/  # Colecciones principales
-│   └── prelude.json
-│
-├── docker-compose.yml              # Configuración de servicios Docker
-├── Dockerfile.backend              # Build del backend desde código
-├── Dockerfile.frontend             # Build del frontend desde archivos
-├── nginx.conf                      # Configuración de Nginx
-├── .env.example                    # Plantilla de variables de entorno
-├── .gitignore                      # Archivos ignorados en Git
-├── README.md                       # Documentación principal
-├── restore.sh                      # Script de restauración
-├── backup.sh                       # Script de backup
-└── ESTRUCTURA.md                   # Este archivo
+└── backend/                      # Código de la aplicación
+    ├── api/
+    │   └── v1/                   # Versión 1 de la API
+    │       ├── approvals.py      # Endpoints de aprobaciones
+    │       ├── auth.py           # Endpoints de autenticación
+    │       ├── reports.py        # Endpoints de reportes
+    │       └── websockets.py     # Websockets
+    │
+    ├── routes/
+    │   ├── human_resources.py    # Rutas de RRHH
+    │   └── inventory.py          # Rutas de inventario
+    │
+    ├── services/                 # Lógica de negocio
+    │   ├── approval_service.py
+    │   ├── audit.py
+    │   ├── cash.py
+    │   ├── pin_policy.py
+    │   ├── token_cleanup.py
+    │   ├── venta_service.py
+    │   └── weekly_business_sentinel.py
+    │
+    ├── models/                   # Modelos de datos
+    │   └── approval_request.py
+    │
+    ├── db/
+    │   └── session.py            # Conexión a MongoDB
+    │
+    ├── core/
+    │   ├── security.py           # Seguridad y autenticación
+    │   └── websocket_manager.py  # Gestor de websockets
+    │
+    ├── middlewares/
+    │   └── manager_pin.py        # Middleware de PIN
+    │
+    ├── data/
+    │   ├── demo_products.py      # Datos de demostración
+    │   ├── product_template.csv
+    │   ├── drafts.json
+    │   └── seeds/
+    │       └── core_seed.json    # Seed de datos
+    │
+    ├── scripts/                  # Scripts útiles
+    │   ├── add_vehicles_per_customer.py
+    │   ├── check_customers_list.py
+    │   ├── create_customers_validator.py
+    │   ├── e2e_quick_approval.py
+    │   ├── inspect_customers.py
+    │   ├── mark_notification_read_and_check.py
+    │   ├── migrate_customers_is_active.py
+    │   ├── repro_trace_create_customer.py
+    │   └── repro_users_pin.py
+    │
+    ├── tests/                    # Tests automatizados
+    │   ├── test_bug_fixes_iteration7.py
+    │   ├── test_csv_import_installation.py
+    │   ├── test_customer_integration.py
+    │   ├── test_p1_features.py
+    │   ├── test_pin_integration.py
+    │   ├── test_pin_lockout.py
+    │   ├── test_pin_qc_compatibility.py
+    │   ├── test_pin_validation.py
+    │   └── test_technicians_crud.py
+    │
+    ├── templates/
+    │   └── invoice.html          # Template de factura
+    │
+    └── (otros archivos)
 ```
 
-## Descripción de Carpetas
+## Frontend
 
-### backend-source/
-Código fuente completo del backend en Python (FastAPI). Incluye:
-- Modelos de datos
-- Rutas API
-- Lógica de negocio
-- Servicios e integraciones
-
-### frontend-build/
-Frontend compilado (producción). Contiene:
-- JavaScript/CSS compilado
-- Assets (imágenes, iconos)
-- HTML estático
-- Se sirve mediante Nginx
-
-### mongodb-backup/
-Dump completo de MongoDB restaurable con `mongorestore`:
-- Todas las colecciones de la BD
-- Índices y configuración
-- Datos de producción
-
-## Flujo de Restauración
-
-1. **Clonar repositorio**
-   ```bash
-   git clone https://github.com/Samuraimaid/erp3.git
-   cd erp3
-   ```
-
-2. **Iniciar contenedores**
-   ```bash
-   docker compose up -d
-   ```
-
-3. **Restaurar base de datos**
-   ```bash
-   sleep 10
-   docker exec mclarens2-mongodb mongorestore /restore-backup
-   ```
-
-4. **Verificar**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8001
-   - MongoDB: localhost:27017
-
-## Reconstruir Imágenes desde Código
-
-```bash
-# Backend
-docker build -f Dockerfile.backend -t mc-larenserp20-backend:rebuild .
-
-# Frontend
-docker build -f Dockerfile.frontend -t mundo-frontend:rebuild .
+```
+/frontend/
+├── package.json                  # Dependencias Node.js
+├── package-lock.json
+├── vite.config.js                # Config de Vite
+├── Dockerfile                    # Imagen Docker del frontend
+├── nginx.conf                    # Config de Nginx
+│
+└── src/                          # Código React
+    ├── App.jsx
+    ├── main.jsx
+    ├── components/               # Componentes React
+    ├── pages/                    # Páginas
+    ├── services/                 # Servicios API
+    ├── hooks/                    # Hooks personalizados
+    ├── utils/                    # Utilidades
+    ├── styles/                   # Estilos
+    └── assets/                   # Imágenes y assets
 ```
 
-Luego actualizar `docker-compose.yml` con los nuevos tags.
+## Configuración Docker
+
+```
+/
+├── docker-compose.yml            # Stack principal (puertos 3000, 8001, 27017)
+├── docker-compose.no-conflict.yml # Stack GitHub (puertos 3002, 8003, 27019)
+├── Dockerfile.backend            # Build del backend
+├── Dockerfile.frontend           # Build del frontend
+└── nginx.conf                    # Config reverse proxy
+```
+
+## Base de Datos
+
+```
+/mongodb-backup/
+└── mc-larens2_mundo_accesorios_erp/
+    ├── branches.bson
+    ├── customers.bson
+    ├── inventory.bson
+    ├── products.bson
+    ├── users.bson
+    ├── vehicles.bson
+    ├── sales.bson
+    ├── audit_logs.bson
+    ├── notifications.bson
+    ├── pin_auth_logs.bson
+    ├── hypervisor_events.bson
+    ├── sessions.bson
+    ├── dispatch_orders.bson
+    ├── inventory_movements.bson
+    ├── manager_authorizations.bson
+    ├── exchange_rates.bson
+    ├── price_history.bson
+    ├── push_subscriptions.bson
+    ├── settings.bson
+    ├── user_draft_state.bson
+    ├── user_drafts.bson
+    ├── warehouses.bson
+    ├── approval_requests.bson
+    ├── drafts_backup.bson
+    ├── hr_runtime_meta.bson
+    ├── sample_requests.bson
+    └── [archivos .metadata.json]
+```
+
+## Documentación
+
+```
+/
+├── README.md                     # Introducción general
+├── SETUP_COMPLETO.md             # Guía completa de instalación
+├── LEVANTAR_SIN_CONFLICTOS.md    # Cómo levantar 3 stacks sin conflictos
+├── COMANDOS_RAPIDOS.md           # Comandos listos para copiar
+├── RESUMEN_EJECUTIVO.md          # Resumen ejecutivo
+├── ARQUITECTURA.md               # Descripción de la arquitectura
+├── API.md                        # Documentación de API endpoints
+├── DEVELOPMENT.md                # Guía para desarrolladores
+└── ESTRUCTURA.md                 # Este archivo
+```
+
+## Scripts
+
+```
+/
+├── setup-auto.bat                # Setup automático (Windows)
+├── setup-no-conflicts.ps1        # Setup sin conflictos (PowerShell)
+├── backup.sh                     # Script de backup
+└── restore.sh                    # Script de restauración
+```
+
+## Configuración
+
+```
+/
+├── .env.example                  # Variables de entorno (ejemplo)
+└── .gitignore                    # Archivos ignorados por Git
+```
+
+---
+
+## 📍 Ubicación de archivos principales
+
+| Archivo/Carpeta | Ubicación | Descripción |
+|-----------------|-----------|-------------|
+| API FastAPI | `/backend/server.py` | Servidor principal de la API |
+| Rutas RRHH | `/backend/backend/routes/human_resources.py` | Endpoints de recursos humanos |
+| Rutas Inventario | `/backend/backend/routes/inventory.py` | Endpoints de inventario |
+| Frontend React | `/frontend/src/` | Código del interfaz de usuario |
+| DB Dump | `/mongodb-backup/` | Respaldo completo de MongoDB |
+| Config Docker | `/docker-compose.yml` | Configuración de servicios |
+| Tests | `/backend/backend/tests/` | Tests automatizados |
+| Seeds/Datos | `/backend/backend/data/seeds/` | Datos iniciales |
+
+---
+
+## 🚀 Para editar en VSCode
+
+```powershell
+code C:\tmp\erp3
+```
+
+**Carpetas principales a conocer:**
+
+1. **Backend Python:**
+   - `backend/server.py` — Archivo principal de la API
+   - `backend/backend/routes/` — Endpoints
+   - `backend/backend/services/` — Lógica de negocio
+   - `backend/backend/models/` — Esquemas de datos
+
+2. **Frontend React:**
+   - `frontend/src/App.jsx` — Componente principal
+   - `frontend/src/components/` — Componentes reutilizables
+   - `frontend/src/pages/` — Páginas/vistas
+   - `frontend/src/services/` — Llamadas a API
+
+3. **Docker & Config:**
+   - `docker-compose.yml` — Stack principal
+   - `docker-compose.no-conflict.yml` — Stack alternativo
+   - `Dockerfile.backend` y `Dockerfile.frontend` — Builds
+
