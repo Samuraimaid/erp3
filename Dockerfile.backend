@@ -1,0 +1,28 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar requirements
+COPY backend-source/requirements.txt .
+
+# Instalar dependencias Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar código fuente
+COPY backend-source/app ./app
+COPY backend-source/backend ./backend
+
+# Configurar PYTHONPATH
+ENV PYTHONPATH=/app
+
+# Crear entrypoint script
+RUN echo '#!/bin/bash\nuvicorn backend.server:app --host 0.0.0.0 --port 8001' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+EXPOSE 8001
+
+ENTRYPOINT ["/entrypoint.sh"]

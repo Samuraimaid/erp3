@@ -1,5 +1,7 @@
 # Node modules
 node_modules/
+dist/
+build/
 
 # Python
 __pycache__/
@@ -9,6 +11,8 @@ __pycache__/
 .Python
 env/
 venv/
+*.egg-info/
+.eggs/
 
 # Docker images (too large)
 *.tar
@@ -29,13 +33,15 @@ logs/
 *.swp
 *.swo
 *~
+*.iml
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Data (local volumes backup)
-data/
-sessions/
-uploads/
-backups/
+# Cache
+.cache/
+.next/
+
+# Large build artifacts (opcional)
+frontend-build/node_modules/

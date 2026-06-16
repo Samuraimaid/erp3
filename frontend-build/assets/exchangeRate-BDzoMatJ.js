@@ -1,0 +1,1 @@
+import{a3 as c}from"./vendor-Crq3mNns.js";import{A as n}from"./index-B8fI4rYC.js";const a=36.5;async function u(r={}){const i=r.withCredentials??!0,e=Number(r.fallback??a);try{const s=await c.get(`${n}/currencies/usd-nio-effective`,{withCredentials:i}),t=Number(s?.data?.rate||0);if(Number.isFinite(t)&&t>0)return t}catch{}return Number.isFinite(e)&&e>0?e:a}export{a as D,u as f};

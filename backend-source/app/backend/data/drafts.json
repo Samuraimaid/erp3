@@ -1,0 +1,33 @@
+{
+  "users": {
+    "user_b4c40ad447e4": {
+      "saved_at": "2026-02-02T22:37:49.030796+00:00",
+      "entries": [
+        {
+          "key": "draft_quote_v1_quote_ml5r2ol6_se90h",
+          "value": "{\"selectedCustomerId\":\"cust_002\",\"selectedVehicle\":\"veh_001\",\"selectedWarehouse\":\"\",\"cartItems\":[{\"product_id\":\"prod_for_001\",\"product_name\":\"Forro de Timón Cuero Negro\",\"image\":\"https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=400\",\"quantity\":2,\"unit_price\":35,\"discount\":0,\"installation_type\":\"optional\",\"installation_price\":0,\"with_installation\":false}],\"globalDiscount\":0,\"notes\":\"\",\"applyIVA\":true,\"ivaRate\":12,\"currency\":\"NIO\",\"exchangeRate\":36.5,\"appliedDiscounts\":[],\"customerSearch\":\"m\",\"productSearch\":\"forr\",\"updatedAt\":\"2026-02-02T22:37:40.641Z\"}"
+        },
+        {
+          "key": "draft_quote_tabs_v1",
+          "value": "[{\"id\":\"quote_ml5r2ol6_se90h\",\"name\":\"Cotización 1\",\"updatedAt\":\"2026-02-02T22:37:24.859Z\"}]"
+        },
+        {
+          "key": "draft_quote_active_v1",
+          "value": "quote_ml5r2ol6_se90h"
+        },
+        {
+          "key": "draft_sale_tabs_v1",
+          "value": "[{\"id\":\"sale_ml5r033s_qasa7\",\"name\":\"Venta 1\",\"updatedAt\":\"2026-02-02T22:35:23.705Z\"}]"
+        },
+        {
+          "key": "draft_sale_v1_sale_ml5r033s_qasa7",
+          "value": "{\"selectedCustomerId\":\"cust_12ed6f88\",\"selectedVehicle\":\"\",\"selectedWarehouse\":\"\",\"cartItems\":[{\"product_id\":\"prod_alf_001\",\"product_name\":\"Alfombras de Goma Universal 4pcs\",\"image\":\"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400\",\"quantity\":1,\"unit_price\":45,\"discount\":0,\"installation_type\":\"optional\",\"installation_price\":0,\"with_installation\":false}],\"globalDiscount\":0,\"notes\":\"\",\"applyIVA\":true,\"ivaRate\":12,\"currency\":\"NIO\",\"exchangeRate\":36.5,\"appliedDiscounts\":[],\"customerSearch\":\"123\",\"productSearch\":\"alfo\",\"updatedAt\":\"2026-02-02T22:36:48.673Z\"}"
+        },
+        {
+          "key": "draft_sale_active_v1",
+          "value": "sale_ml5r033s_qasa7"
+        }
+      ]
+    }
+  }
+}

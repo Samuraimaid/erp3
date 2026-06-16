@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#0f172a"/>
+  <rect x="80" y="80" width="1040" height="515" rx="16" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="120" y="150" fill="#e2e8f0" font-family="Arial" font-size="36" font-weight="700">Cotizaciones</text>
+  <text x="120" y="210" fill="#94a3b8" font-family="Arial" font-size="20">Captura de referencia - reemplazar por imagen real</text>
+  <rect x="140" y="260" width="920" height="70" rx="12" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <text x="170" y="305" fill="#38bdf8" font-family="Arial" font-size="18" font-weight="700">Validez, cliente y vehículo</text>
+  <rect x="140" y="360" width="920" height="180" rx="12" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <text x="170" y="420" fill="#e2e8f0" font-family="Arial" font-size="20" font-weight="600">Detalle de productos y totales</text>
+</svg>

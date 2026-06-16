@@ -1,0 +1,4 @@
+sku,name,description,category,subcategory,brand,price,cost,installation_type,installation_price,installation_time,warranty_months,image_url
+AMP-001,Amplificador 4 Canales,Amplificador de alta potencia,accesorios_electronicos,Amplificadores,DS18,299.99,150.00,required,50.00,90,24,https://example.com/amp.jpg
+SPK-001,Parlantes 6.5 Coaxiales,Parlantes de 2 vías,accesorios_electronicos,Parlantes,DS18,89.99,45.00,optional,25.00,45,12,https://example.com/spk.jpg
+ACC-001,Cable RCA 5m,Cable de audio profesional,accesorios_no_electricos,Cables y Conectores,Monster,29.99,10.00,not_available,0,0,6,https://example.com/cable.jpg
